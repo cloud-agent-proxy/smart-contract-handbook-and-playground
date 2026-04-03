@@ -46,6 +46,9 @@ const EDGE_TYPES = {
   fundFlow: FundFlowEdge,
 } as const;
 
+// Stable empty arrays to avoid new-reference-per-render triggering useEffect loops
+const EMPTY_STRINGS: string[] = [];
+
 // ─── Inner canvas (must live inside ReactFlowProvider) ───────────────────────
 
 interface FlowCanvasInnerProps {
@@ -62,8 +65,8 @@ function FlowCanvasInner({
   layoutEdges,
   isLayouting,
   description,
-  highlightedNodes = [],
-  highlightedEdges = [],
+  highlightedNodes = EMPTY_STRINGS,
+  highlightedEdges = EMPTY_STRINGS,
 }: FlowCanvasInnerProps) {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>(layoutNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>(layoutEdges);
