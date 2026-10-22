@@ -1,0 +1,28 @@
+name: Runtime security baseline
+
+on:
+  pull_request:
+  push:
+    branches: ['hotfix/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  runtime-security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version-file: .node-version
+      - name: Check Node security floor
+        run: |
+          node scripts/security/check-node-runtime.cjs
+          node --test scripts/security/verify-node-runtime.cjs
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.13'
+      - name: Bootstrap and verify Python certificate trust
+        run: python scripts/security/bootstrap-python.py
